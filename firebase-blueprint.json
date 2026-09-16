@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile, settings, and persisted activity aggregates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "handle": { "type": "string" },
+        "email": { "type": "string" },
+        "avatar": { "type": "string" },
+        "bio": { "type": "string" },
+        "initials": { "type": "string" },
+        "color": { "type": "string" },
+        "region": { "type": "string" },
+        "nearbyOptIn": { "type": "boolean" },
+        "followersCount": { "type": "number" },
+        "followingCount": { "type": "number" },
+        "dreamsCount": { "type": "number" },
+        "role": { "type": "string" },
+        "bannerQuote": { "type": "string" },
+        "likedDreamIds": { "type": "array" },
+        "savedDreamIds": { "type": "array" },
+        "followingUserIds": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "lastActiveAt": { "type": "string" }
+      },
+      "required": ["id", "name", "handle"]
+    },
+    "UserActivity": {
+      "title": "UserActivity",
+      "description": "Permanent log of user actions and activities across sessions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "actionType": {
+          "type": "string",
+          "enum": ["CREATE_DREAM", "LIKE_DREAM", "UNLIKE_DREAM", "SAVE_DREAM", "UNSAVE_DREAM", "ADD_COMMENT", "THREAD_REPLY", "FOLLOW_USER", "LOGIN", "LOGOUT", "UPDATE_PROFILE"]
+        },
+        "targetId": { "type": "string" },
+        "targetTitle": { "type": "string" },
+        "description": { "type": "string" },
+        "metadata": { "type": "object" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "userId", "actionType", "description", "timestamp"]
+    },
+    "Dream": {
+      "title": "Dream",
+      "description": "Recorded dream journal entry, transcript, and audio memo",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "hook": { "type": "string" },
+        "content": { "type": "string" },
+        "category": { "type": "string" },
+        "author": { "type": "object" },
+        "likes": { "type": "number" },
+        "commentsCount": { "type": "number" },
+        "viewsCount": { "type": "number" },
+        "timestamp": { "type": "string" },
+        "tags": { "type": "array" },
+        "audience": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "duration": { "type": "string" },
+        "hasAudio": { "type": "boolean" },
+        "hasClip": { "type": "boolean" },
+        "sensoryPalette": { "type": "object" },
+        "comments": { "type": "array" },
+        "circleThreads": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "content", "category", "author"]
+    },
+    "DirectMessage": {
+      "title": "DirectMessage",
+      "description": "Direct communication thread between dreamers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participantIds": { "type": "array" },
+        "participantName": { "type": "string" },
+        "messages": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "participantIds", "messages"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile with saved arrays and preferences"
+    },
+    "/users/{userId}/activities/{activityId}": {
+      "schema": { "$ref": "#/entities/UserActivity" },
+      "description": "User activity timeline entries"
+    },
+    "/dreams/{dreamId}": {
+      "schema": { "$ref": "#/entities/Dream" },
+      "description": "Published and archived dreams"
+    },
+    "/messages/{threadId}": {
+      "schema": { "$ref": "#/entities/DirectMessage" },
+      "description": "Direct message threads between users"
+    }
+  }
+}
